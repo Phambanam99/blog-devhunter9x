@@ -1,0 +1,82 @@
+{
+    "common": {
+        "home": "Trang chủ",
+        "blog": "Blog",
+        "about": "Giới thiệu",
+        "contact": "Liên hệ",
+        "readMore": "Đọc thêm",
+        "loading": "Đang tải...",
+        "error": "Đã xảy ra lỗi",
+        "search": "Tìm kiếm",
+        "categories": "Danh mục",
+        "tags": "Thẻ",
+        "share": "Chia sẻ",
+        "postedOn": "Đăng ngày",
+        "author": "Tác giả",
+        "relatedPosts": "Bài viết liên quan",
+        "noPosts": "Không có bài viết nào",
+        "viewAll": "Xem tất cả",
+        "switchLanguage": "English",
+        "newsletter": "Đăng ký nhận tin",
+        "subscribe": "Đăng ký",
+        "email": "Email của bạn",
+        "footer": {
+            "copyright": "© 2024 Blog. Bảo lưu mọi quyền.",
+            "privacy": "Chính sách bảo mật",
+            "terms": "Điều khoản sử dụng"
+        }
+    },
+    "home": {
+        "title": "Blog Song Ngữ",
+        "description": "Khám phá những bài viết hữu ích về công nghệ, lập trình và cuộc sống",
+        "featured": "Bài viết nổi bật",
+        "latest": "Bài viết mới nhất",
+        "welcome": "Chào mừng bạn đến với blog của chúng tôi",
+        "viewAll": "Xem tất cả"
+    },
+    "blog": {
+        "title": "Tất cả bài viết",
+        "description": "Danh sách đầy đủ các bài viết trên blog",
+        "searchPlaceholder": "Tìm kiếm bài viết...",
+        "filterByCategory": "Lọc theo danh mục",
+        "filterByTag": "Lọc theo thẻ",
+        "allCategories": "Tất cả danh mục",
+        "allTags": "Tất cả thẻ",
+        "categories": "Danh mục",
+        "tags": "Thẻ",
+        "noResults": "Không tìm thấy bài viết nào",
+        "previous": "Trước",
+        "next": "Tiếp",
+        "page": "Trang"
+    },
+    "post": {
+        "tableOfContents": "Mục lục",
+        "shareThis": "Chia sẻ bài viết này",
+        "copyLink": "Sao chép liên kết",
+        "copied": "Đã sao chép!",
+        "updatedOn": "Cập nhật ngày",
+        "minRead": "phút đọc",
+        "comments": "Bình luận"
+    },
+    "category": {
+        "title": "Danh mục: {name}",
+        "description": "Tất cả bài viết trong danh mục {name}"
+    },
+    "tag": {
+        "title": "Thẻ: {name}",
+        "description": "Tất cả bài viết với thẻ {name}"
+    },
+    "search": {
+        "title": "Kết quả tìm kiếm",
+        "description": "Kết quả tìm kiếm cho: {query}",
+        "noResults": "Không tìm thấy kết quả cho '{query}'",
+        "resultsCount": "Tìm thấy {count} kết quả"
+    },
+    "error": {
+        "404": "Trang không tồn tại",
+        "404Description": "Trang bạn tìm kiếm không tồn tại hoặc đã bị xóa.",
+        "500": "Lỗi máy chủ",
+        "500Description": "Đã xảy ra lỗi từ phía máy chủ. Vui lòng thử lại sau.",
+        "goHome": "Về trang chủ"
+    }
+}

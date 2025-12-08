@@ -1,0 +1,82 @@
+{
+    "common": {
+        "home": "Home",
+        "blog": "Blog",
+        "about": "About",
+        "contact": "Contact",
+        "readMore": "Read more",
+        "loading": "Loading...",
+        "error": "An error occurred",
+        "search": "Search",
+        "categories": "Categories",
+        "tags": "Tags",
+        "share": "Share",
+        "postedOn": "Posted on",
+        "author": "Author",
+        "relatedPosts": "Related Posts",
+        "noPosts": "No posts found",
+        "viewAll": "View all",
+        "switchLanguage": "Tiếng Việt",
+        "newsletter": "Newsletter",
+        "subscribe": "Subscribe",
+        "email": "Your email",
+        "footer": {
+            "copyright": "© 2024 Blog. All rights reserved.",
+            "privacy": "Privacy Policy",
+            "terms": "Terms of Service"
+        }
+    },
+    "home": {
+        "title": "Bilingual Blog",
+        "description": "Discover helpful articles about technology, programming, and lifestyle",
+        "featured": "Featured Posts",
+        "latest": "Latest Posts",
+        "welcome": "Welcome to our blog",
+        "viewAll": "View all"
+    },
+    "blog": {
+        "title": "All Posts",
+        "description": "Complete list of blog posts",
+        "searchPlaceholder": "Search posts...",
+        "filterByCategory": "Filter by category",
+        "filterByTag": "Filter by tag",
+        "allCategories": "All categories",
+        "allTags": "All tags",
+        "categories": "Categories",
+        "tags": "Tags",
+        "noResults": "No posts found",
+        "previous": "Previous",
+        "next": "Next",
+        "page": "Page"
+    },
+    "post": {
+        "tableOfContents": "Table of Contents",
+        "shareThis": "Share this post",
+        "copyLink": "Copy link",
+        "copied": "Copied!",
+        "updatedOn": "Updated on",
+        "minRead": "min read",
+        "comments": "Comments"
+    },
+    "category": {
+        "title": "Category: {name}",
+        "description": "All posts in category {name}"
+    },
+    "tag": {
+        "title": "Tag: {name}",
+        "description": "All posts tagged with {name}"
+    },
+    "search": {
+        "title": "Search Results",
+        "description": "Search results for: {query}",
+        "noResults": "No results found for '{query}'",
+        "resultsCount": "Found {count} results"
+    },
+    "error": {
+        "404": "Page Not Found",
+        "404Description": "The page you are looking for does not exist or has been removed.",
+        "500": "Server Error",
+        "500Description": "A server error occurred. Please try again later.",
+        "goHome": "Go Home"
+    }
+}

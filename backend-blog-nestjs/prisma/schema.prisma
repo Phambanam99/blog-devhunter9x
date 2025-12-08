@@ -1,0 +1,369 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearchPostgres"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============ USER & AUTH ============
+enum Role {
+  ADMIN
+  EDITOR
+  AUTHOR
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  passwordHash  String?
+  name          String
+  avatar        String?
+  role          Role      @default(AUTHOR)
+  isActive      Boolean   @default(true)
+  emailVerified DateTime?
+
+  // Password reset
+  resetToken       String?
+  resetTokenExpiry DateTime?
+
+  // Relations
+  posts      Post[]
+  auditLogs  AuditLog[]
+  revisions  Revision[]
+  mediaUploads Media[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([email])
+  @@index([role])
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([token])
+  @@index([userId])
+}
+
+// ============ POSTS ============
+enum PostStatus {
+  DRAFT
+  REVIEW
+  PUBLISHED
+  SCHEDULED
+}
+
+model Post {
+  id        String     @id @default(cuid())
+  authorId  String
+  status    PostStatus @default(DRAFT)
+  publishAt DateTime?
+
+  // Relations
+  author       User                @relation(fields: [authorId], references: [id])
+  translations PostTranslation[]
+  categories   CategoriesOnPosts[]
+  tags         TagsOnPosts[]
+  revisions    Revision[]
+  media        MediaOnPosts[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([publishAt])
+  @@index([authorId])
+  @@index([status, publishAt])
+}
+
+model PostTranslation {
+  id     String @id @default(cuid())
+  postId String
+  locale String // 'vi' | 'en'
+
+  // Content
+  title   String
+  slug    String
+  excerpt String?
+  body    String // Markdown content
+  bodyHtml String? // Rendered HTML cache
+
+  // SEO Fields
+  metaTitle       String?
+  metaDescription String?
+  canonical       String?
+  ogImage         String?
+  schemaType      String? // Article, FAQ, HowTo, BlogPosting
+  schemaData      Json? // Custom structured data
+
+  // Hero image
+  heroImageId String?
+  heroImage   Media?  @relation(fields: [heroImageId], references: [id])
+
+  // Search - will be populated by trigger
+  // Note: tsvector requires raw SQL for full functionality
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([postId, locale])
+  @@unique([locale, slug])
+  @@index([locale])
+  @@index([slug])
+}
+
+// ============ CATEGORIES ============
+model Category {
+  id       String @id @default(cuid())
+  parentId String?
+
+  // Self-referencing for hierarchy
+  parent   Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children Category[] @relation("CategoryHierarchy")
+
+  translations CategoryTranslation[]
+  posts        CategoriesOnPosts[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CategoryTranslation {
+  id          String @id @default(cuid())
+  categoryId  String
+  locale      String
+  name        String
+  slug        String
+  description String?
+
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@unique([categoryId, locale])
+  @@unique([locale, slug])
+  @@index([locale])
+}
+
+// ============ TAGS ============
+model Tag {
+  id String @id @default(cuid())
+
+  translations TagTranslation[]
+  posts        TagsOnPosts[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model TagTranslation {
+  id     String @id @default(cuid())
+  tagId  String
+  locale String
+  name   String
+  slug   String
+
+  tag Tag @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@unique([tagId, locale])
+  @@unique([locale, slug])
+  @@index([locale])
+}
+
+// ============ JUNCTION TABLES ============
+model CategoriesOnPosts {
+  postId     String
+  categoryId String
+
+  post     Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  assignedAt DateTime @default(now())
+
+  @@id([postId, categoryId])
+}
+
+model TagsOnPosts {
+  postId String
+  tagId  String
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  tag  Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  assignedAt DateTime @default(now())
+
+  @@id([postId, tagId])
+}
+
+// ============ MEDIA ============
+enum MediaType {
+  IMAGE
+  VIDEO
+  DOCUMENT
+}
+
+model Media {
+  id           String    @id @default(cuid())
+  filename     String    // Stored filename
+  originalName String    // Original upload name
+  mimeType     String
+  size         Int       // File size in bytes
+  type         MediaType @default(IMAGE)
+
+  // URLs
+  url          String    // Main file URL
+  thumbnailUrl String?   // Thumbnail for videos/images
+
+  // Image dimensions
+  width  Int?
+  height Int?
+
+  // Metadata
+  alt         String?
+  caption     String?
+  duration    Int?    // Video duration in seconds
+
+  // Responsive variants (JSON: { sm: url, md: url, lg: url, webp: url })
+  variants Json?
+
+  // Uploader
+  uploaderId String?
+  uploader   User?   @relation(fields: [uploaderId], references: [id])
+
+  // Relations
+  posts   MediaOnPosts[]
+  heroFor PostTranslation[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([type])
+  @@index([uploaderId])
+  @@index([createdAt])
+}
+
+model MediaOnPosts {
+  postId  String
+  mediaId String
+
+  post  Post  @relation(fields: [postId], references: [id], onDelete: Cascade)
+  media Media @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+
+  @@id([postId, mediaId])
+}
+
+// ============ REVISIONS (Version History) ============
+model Revision {
+  id      String @id @default(cuid())
+  postId  String
+  locale  String
+  version Int
+
+  // Snapshot of translation data
+  data Json
+
+  // Who created this revision
+  createdById String
+  createdBy   User   @relation(fields: [createdById], references: [id])
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([postId, locale, version])
+  @@index([postId, locale])
+  @@index([createdAt])
+}
+
+// ============ AUDIT LOGS ============
+enum AuditAction {
+  CREATE
+  UPDATE
+  DELETE
+  PUBLISH
+  UNPUBLISH
+  SCHEDULE
+  LOGIN
+  LOGOUT
+  PASSWORD_RESET
+}
+
+model AuditLog {
+  id       String      @id @default(cuid())
+  userId   String?
+  action   AuditAction
+  entity   String      // 'Post', 'User', 'Media', 'Category', 'Tag'
+  entityId String?
+
+  // Change tracking
+  oldValue Json?
+  newValue Json?
+
+  // Request metadata
+  ipAddress String?
+  userAgent String?
+
+  user User? @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@index([entity, entityId])
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
+}
+
+// ============ PREVIEW TOKENS ============
+model PreviewToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  postId    String
+  locale    String?  // Optional: specific locale preview
+  expiresAt DateTime
+
+  createdAt DateTime @default(now())
+
+  @@index([token])
+  @@index([expiresAt])
+}
+
+// ============ WEBHOOKS ============
+model Webhook {
+  id       String   @id @default(cuid())
+  name     String
+  url      String
+  events   String[] // ['post.published', 'post.unpublished', 'post.created']
+  secret   String   // For signature verification
+  isActive Boolean  @default(true)
+
+  // Last execution info
+  lastTriggeredAt DateTime?
+  lastStatus      Int?      // HTTP status code
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isActive])
+}
+
+// ============ SETTINGS ============
+model Setting {
+  id    String @id @default(cuid())
+  key   String @unique
+  value Json
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([key])
+}
