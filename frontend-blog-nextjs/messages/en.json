@@ -21,13 +21,13 @@
         "subscribe": "Subscribe",
         "email": "Your email",
         "footer": {
-            "copyright": "© 2024 Blog. All rights reserved.",
+            "copyright": "© 2024 Blog Devhunter9x. All rights reserved.",
             "privacy": "Privacy Policy",
             "terms": "Terms of Service"
         }
     },
     "home": {
-        "title": "Bilingual Blog",
+        "title": "Blog Devhunter9x",
         "description": "Discover helpful articles about technology, programming, and lifestyle",
         "featured": "Featured Posts",
         "latest": "Latest Posts",

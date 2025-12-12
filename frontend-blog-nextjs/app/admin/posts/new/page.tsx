@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { createPost, getAdminCategories, getAdminTags, uploadMedia } from '@/lib/admin-api';
+import { generateSlug } from '@/lib/slug';
 import { MediaSelector, MediaItem } from '@/components/MediaSelector';
 import { MetaPreview } from '@/components/MetaPreview';
 
@@ -102,15 +103,6 @@ export default function NewPostPage() {
                 [field]: value,
             },
         }));
-    }
-
-    function generateSlug(title: string): string {
-        return title
-            .toLowerCase()
-            .replace(/[^\w\s-]/g, '')
-            .replace(/\s+/g, '-')
-            .replace(/-+/g, '-')
-            .trim();
     }
 
     function handleTitleChange(locale: Locale, value: string) {

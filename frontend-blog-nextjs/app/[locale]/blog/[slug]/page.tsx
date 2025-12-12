@@ -2,11 +2,15 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { type Locale, locales } from '@/i18n';
-import ThemeToggle from '@/components/ThemeToggle';
-import { ReadingProgress, ReadingToc } from '@/components/ReadingProgress';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+import { ReadingProgress, ReadingToc, CollapsibleToc } from '@/components/ReadingProgress';
+import ScrollToTop from '@/components/ScrollToTop';
 import DOMPurify from 'isomorphic-dompurify';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
+const API_URL = process.env.BACKEND_URL
+    ? `${process.env.BACKEND_URL}/api`
+    : (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api');
 
 interface Post {
     id: string;
@@ -161,31 +165,17 @@ export default async function BlogPostPage({ params }: { params: Promise<{ local
             <link rel="alternate" hrefLang="x-default" href={`${siteUrl}/vi/blog/${post.translations.find(t => t.locale === 'vi')?.slug || slug}`} />
 
             <ReadingProgress targetSelector="#post-content" offset={80} />
+            <ScrollToTop />
 
             <div className="min-h-screen">
-                <header className="fixed top-0 left-0 right-0 z-50 glass">
-                    <div className="container">
-                        <nav className="flex items-center justify-between h-16">
-                            <Link href={`/${locale}`} className="text-xl font-bold gradient-text">Blog</Link>
-                            <div className="hidden md:flex items-center gap-8">
-                                <Link href={`/${locale}`} className="text-sm font-medium hover:text-[var(--color-primary)]">{locale === 'vi' ? 'Trang chủ' : 'Home'}</Link>
-                                <Link href={`/${locale}/blog`} className="text-sm font-medium hover:text-[var(--color-primary)]">{locale === 'vi' ? 'Blog' : 'Blog'}</Link>
-                                <Link href={`/${locale}/about`} className="text-sm font-medium hover:text-[var(--color-primary)]">{locale === 'vi' ? 'Giới thiệu' : 'About'}</Link>
-                            </div>
-                            <div className="flex items-center gap-3">
-                                <ThemeToggle />
-                                {otherTrans && (
-                                    <Link href={`/${otherLocale}/blog/${otherTrans.slug}`} className="text-sm font-medium px-3 py-1.5 rounded-full border border-[var(--color-border)] hover:border-[var(--color-primary)]">
-                                        {locale === 'vi' ? 'English' : 'Tiếng Việt'}
-                                    </Link>
-                                )}
-                            </div>
-                        </nav>
-                    </div>
-                </header>
+                <Header
+                    locale={locale as Locale}
+                    currentPage="post"
+                    altLangHref={otherTrans ? `/${otherLocale}/blog/${otherTrans.slug}` : undefined}
+                />
 
                 <main className="pt-24 pb-16">
-                    <article className="container max-w-5xl">
+                    <article className="container max-w-5xl mx-auto">
                         <div className="mb-8">
                             <Link href={`/${locale}/blog`} className="text-[var(--color-primary)] hover:underline mb-4 inline-block">← {locale === 'vi' ? 'Quay lại' : 'Back to Blog'}</Link>
                             <h1 className="text-4xl md:text-5xl font-bold mb-4">{currentTrans.title}</h1>
@@ -196,61 +186,57 @@ export default async function BlogPostPage({ params }: { params: Promise<{ local
                             </div>
                         </div>
 
-                        <div className="grid lg:grid-cols-[minmax(0,1fr)_260px] gap-8 items-start">
-                            <div>
-                                {currentTrans.heroImage?.url && (
-                                    <div className="aspect-[16/9] rounded-2xl overflow-hidden mb-8">
-                                        <img src={currentTrans.heroImage.url} alt={currentTrans.title} className="w-full h-full object-cover" />
-                                    </div>
-                                )}
+                        <div className="bg-[var(--color-surface)] rounded-2xl p-6 md:p-8 border border-[var(--color-border)] shadow-sm">
+                            {currentTrans.heroImage?.url && (
+                                <div className="aspect-[16/9] rounded-2xl overflow-hidden mb-8">
+                                    <img src={currentTrans.heroImage.url} alt={currentTrans.title} className="w-full h-full object-cover" />
+                                </div>
+                            )}
 
-                                {(post.categories?.length > 0 || post.tags?.length > 0) && (
-                                    <div className="flex flex-wrap gap-2 mb-6">
-                                        {post.categories?.map(({ category }, i) => {
-                                            const catTrans = category.translations?.find(t => t.locale === locale) || category.translations?.[0];
-                                            return catTrans ? <span key={i} className="px-3 py-1 bg-[var(--color-primary)] text-white text-sm rounded-full">{catTrans.name}</span> : null;
-                                        })}
-                                        {post.tags?.map(({ tag }, i) => {
-                                            const tagTrans = tag.translations?.find(t => t.locale === locale) || tag.translations?.[0];
-                                            return tagTrans ? <span key={i} className="px-3 py-1 bg-[var(--color-border)] text-sm rounded-full">{tagTrans.name}</span> : null;
-                                        })}
-                                    </div>
-                                )}
+                            {(post.categories?.length > 0 || post.tags?.length > 0) && (
+                                <div className="flex flex-wrap gap-2 mb-6">
+                                    {post.categories?.map(({ category }, i) => {
+                                        const catTrans = category.translations?.find(t => t.locale === locale) || category.translations?.[0];
+                                        return catTrans ? <span key={i} className="px-3 py-1 bg-[var(--color-primary)] text-white text-sm rounded-full">{catTrans.name}</span> : null;
+                                    })}
+                                    {post.tags?.map(({ tag }, i) => {
+                                        const tagTrans = tag.translations?.find(t => t.locale === locale) || tag.translations?.[0];
+                                        return tagTrans ? <span key={i} className="px-3 py-1 bg-[var(--color-border)] text-sm rounded-full">{tagTrans.name}</span> : null;
+                                    })}
+                                </div>
+                            )}
 
-                                <div
-                                    id="post-content"
-                                    className="prose prose-lg max-w-none"
-                                    dangerouslySetInnerHTML={{
-                                        __html: DOMPurify.sanitize(currentTrans.bodyHtml || currentTrans.body, {
-                                            ADD_TAGS: ['video', 'source'],
-                                            ADD_ATTR: ['controls', 'src', 'type', 'width', 'height', 'poster']
-                                        })
-                                    }}
-                                />
+                            {/* Mobile TOC - after tags */}
+                            <CollapsibleToc
+                                title={locale === 'vi' ? 'Mục lục' : 'Contents'}
+                                targetSelector="#post-content"
+                            />
+                            <div
+                                id="post-content"
+                                className="prose prose-lg max-w-none"
+                                dangerouslySetInnerHTML={{
+                                    __html: DOMPurify.sanitize(currentTrans.bodyHtml || currentTrans.body, {
+                                        ADD_TAGS: ['video', 'source'],
+                                        ADD_ATTR: ['controls', 'src', 'type', 'width', 'height', 'poster']
+                                    })
+                                }}
+                            />
 
-                                <div className="mt-12 p-6 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)]">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-16 h-16 rounded-full bg-[var(--color-primary)] flex items-center justify-center text-white text-2xl font-bold">{post.author?.name?.charAt(0) || 'A'}</div>
-                                        <div>
-                                            <h3 className="font-bold text-lg">{post.author?.name}</h3>
-                                            <p className="text-[var(--color-text-muted)]">{locale === 'vi' ? 'Tác giả' : 'Author'}</p>
-                                        </div>
+                            <div className="mt-12 p-6 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)]">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-16 h-16 rounded-full bg-[var(--color-primary)] flex items-center justify-center text-white text-2xl font-bold">{post.author?.name?.charAt(0) || 'A'}</div>
+                                    <div>
+                                        <h3 className="font-bold text-lg">{post.author?.name}</h3>
+                                        <p className="text-[var(--color-text-muted)]">{locale === 'vi' ? 'Tác giả' : 'Author'}</p>
                                     </div>
                                 </div>
                             </div>
-
-                            <ReadingToc
-                                title={locale === 'vi' ? 'Phụ lục' : 'Contents'}
-                                targetSelector="#post-content"
-                            />
                         </div>
                     </article>
                 </main>
 
-                <footer className="py-8 bg-[var(--color-surface)] border-t border-[var(--color-border)]">
-                    <div className="container text-center text-[var(--color-text-muted)]">© 2024 Blog. {locale === 'vi' ? 'Bảo lưu mọi quyền.' : 'All rights reserved.'}</div>
-                </footer>
-            </div>
+                <Footer locale={locale as Locale} />
+            </div >
         </>
     );
 }

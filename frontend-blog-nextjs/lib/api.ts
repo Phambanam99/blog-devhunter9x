@@ -1,4 +1,7 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
+// Use BACKEND_URL for server-side rendering in Docker, fallback to NEXT_PUBLIC_API_URL for client-side
+const API_URL = process.env.BACKEND_URL
+    ? `${process.env.BACKEND_URL}/api`
+    : (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api');
 
 export interface Post {
     id: string;

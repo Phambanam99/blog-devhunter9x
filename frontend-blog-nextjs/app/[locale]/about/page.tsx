@@ -3,7 +3,8 @@
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import ThemeToggle from '@/components/ThemeToggle';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import { type Locale } from '@/i18n';
 
 type Bilingual = { vi: string; en: string };
@@ -16,48 +17,29 @@ const experiences: Array<{
     period: Bilingual;
     achievements: Bilingual[];
 }> = [
-    {
-        company: 'Freelance & Blog Studio',
-        role: { vi: 'Kỹ sư phần mềm / Tác giả blog', en: 'Software Engineer / Blogger' },
-        period: { vi: '2018 - Hiện tại', en: '2018 - Present' },
-        achievements: [
-            {
-                vi: 'Xây dựng hệ thống blog song ngữ với Next.js, NestJS, Prisma và PostgreSQL.',
-                en: 'Built a bilingual blog system using Next.js, NestJS, Prisma, and PostgreSQL.',
-            },
-            {
-                vi: 'Thiết kế trải nghiệm người dùng tối ưu cho SEO, tốc độ và khả năng truy cập.',
-                en: 'Designed user experiences optimized for SEO, performance, and accessibility.',
-            },
-            {
-                vi: 'Viết và biên tập nội dung kỹ thuật, tập trung vào thực tiễn triển khai.',
-                en: 'Authored and edited technical articles focused on practical implementation.',
-            },
-        ],
-    },
-    {
-        company: 'Product & Platform Teams',
-        role: { vi: 'Tech Lead / Full-stack Engineer', en: 'Tech Lead / Full-stack Engineer' },
-        period: { vi: '2014 - 2018', en: '2014 - 2018' },
-        achievements: [
-            {
-                vi: 'Dẫn dắt nhóm 6 người xây dựng dịch vụ API phục vụ >1 triệu request/ngày.',
-                en: 'Led a 6-person team building APIs serving 1M+ requests/day.',
-            },
-            {
-                vi: 'Thiết lập CI/CD, logging và giám sát giúp giảm 40% thời gian khắc phục sự cố.',
-                en: 'Set up CI/CD, logging, and monitoring, cutting incident resolution time by 40%.',
-            },
-            {
-                vi: 'Huấn luyện thành viên mới về codebase, kiến trúc và best practices.',
-                en: 'Coached new teammates on codebase, architecture, and best practices.',
-            },
-        ],
-    },
-];
+        {
+            company: 'TT CNTT',
+            role: { vi: 'Kỹ sư phần mềm / Tác giả blog', en: 'Software Engineer / Blogger' },
+            period: { vi: '2023 - Hiện tại', en: '2023 - Present' },
+            achievements: [
+                {
+                    vi: 'Xây dựng các phần mềm trong các cơ quan nhà nước phục vụ chuyển đổi số.',
+                    en: 'Built software for government agencies to serve digital transformation.',
+                },
+                {
+                    vi: 'Thiết kế trải nghiệm người dùng tối ưu cho SEO, tốc độ và khả năng truy cập.',
+                    en: 'Designed user experiences optimized for SEO, performance, and accessibility.',
+                },
+                {
+                    vi: 'Viết và biên tập nội dung kỹ thuật, tập trung vào thực tiễn triển khai.',
+                    en: 'Authored and edited technical articles focused on practical implementation.',
+                },
+            ],
+        }
+    ];
 
 const skills = {
-    tech: ['TypeScript', 'Node.js', 'NestJS', 'React', 'Next.js', 'Prisma', 'PostgreSQL', 'Redis'],
+    tech: ['TypeScript', 'Node.js', 'NestJS', 'React', 'Next.js', 'Prisma', 'PostgreSQL', 'Redis', 'Java', 'Spring Boot'],
     tooling: ['Git & CI/CD', 'Docker', 'RESTful APIs', 'GraphQL basics', 'Testing', 'Performance tuning'],
     soft: ['Mentoring', 'Product thinking', 'Technical writing', 'Problem solving', 'Communication'],
 };
@@ -67,23 +49,31 @@ const projects: Array<{
     description: Bilingual;
     stack: string[];
 }> = [
-    {
-        title: { vi: 'Blog song ngữ', en: 'Bilingual blog' },
-        description: {
-            vi: 'Nền tảng blog đa ngôn ngữ với chế độ tối, tối ưu SEO và trải nghiệm đọc mượt.',
-            en: 'Multilingual blog platform with dark mode, SEO-friendly structure, and smooth reading UX.',
+        {
+            title: { vi: 'Blog devhunter9x', en: 'Devhunter9x blog' },
+            description: {
+                vi: 'Nền tảng blog đa ngôn ngữ với chế độ tối, tối ưu SEO và trải nghiệm đọc mượt.',
+                en: 'Multilingual blog platform with dark mode, SEO-friendly structure, and smooth reading UX.',
+            },
+            stack: ['Next.js', 'Next-Intl', 'Tailwind', 'ISR/Revalidation'],
         },
-        stack: ['Next.js', 'Next-Intl', 'Tailwind', 'ISR/Revalidation'],
-    },
-    {
-        title: { vi: 'CMS nhẹ cho tác giả', en: 'Lightweight author CMS' },
-        description: {
-            vi: 'Dashboard quản trị bài viết, media và phân quyền, đồng bộ với API NestJS.',
-            en: 'Admin dashboard for posts, media, and permissions, synced with NestJS APIs.',
+        {
+            title: { vi: 'Phần mềm quản lý công văn', en: 'Document management software' },
+            description: {
+                vi: 'Dashboard quản lý công văn, media và phân quyền, đồng bộ với API springboot.',
+                en: 'Admin dashboard for posts, media, and permissions, synced with Springboot APIs.',
+            },
+            stack: ['Springboot', 'Websocket', 'PostgreSQL', 'Redis', 'Docker', "Reactjs"],
         },
-        stack: ['NestJS', 'Prisma', 'PostgreSQL', 'Cloud Storage'],
-    },
-];
+        {
+            title: { vi: 'Phần mềm quản lý vũ khí trang bị', en: 'Weapon management software' },
+            description: {
+                vi: 'Dashboard quản lý vũ khí trang bị, media và phân quyền, đồng bộ với API springboot.',
+                en: 'Admin dashboard for posts, media, and permissions, synced with Springboot APIs.',
+            },
+            stack: ['Springboot', 'Websocket', 'PostgreSQL', 'Redis', 'Docker', "Nextjs", "Tailwind", "TypeScript", "Prisma"],
+        },
+    ];
 
 export default function AboutPage() {
     const params = useParams();
@@ -94,42 +84,22 @@ export default function AboutPage() {
 
     const headline = lang === 'vi' ? 'Về tôi' : 'About me';
     const subtitle = lang === 'vi'
-        ? 'Tác giả blog, kỹ sư phần mềm và người kể chuyện về sản phẩm số.'
-        : 'Blog author, software engineer, and storyteller about digital products.';
+        ? 'Tác giả blog, kỹ sư phần mềm.'
+        : 'Blog author, software engineer';
     const summary = lang === 'vi'
-        ? 'Mình là Nam, thích biến ý tưởng thành sản phẩm có ích. Mình tập trung vào hiệu năng, độ tin cậy và trải nghiệm người dùng, đồng thời yêu việc chia sẻ kiến thức qua bài viết và workshop.'
-        : 'I am Nam, focused on shipping useful products with performance, reliability, and thoughtful UX. I love sharing knowledge through writing and workshops.';
+        ? 'Mình là Nam, thích biến ý tưởng thành sản phẩm có ích. Mình tập trung vào hiệu năng, độ tin cậy và trải nghiệm người dùng, đồng thời yêu việc chia sẻ kiến thức qua bài viết và workshop. Là người năng động, luôn học hỏi từng ngày.... Mình nhận mọi dự án làm web, app, thiết kế UI/UX, liên hệ ngay qua email: admin@devhunter9x.qzz.io'
+        : 'I am Nam, focused on shipping useful products with performance, reliability, and thoughtful UX. I love sharing knowledge through writing and workshops. I am always learning and growing every day... I receive every project to make web, app, UI/UX design, contact me via email: admin@devhunter9x.qzz.io';
 
     const quickFacts = [
         { label: lang === 'vi' ? 'Chức danh' : 'Role', value: lang === 'vi' ? 'Software Engineer / Blogger' : 'Software Engineer / Blogger' },
-        { label: lang === 'vi' ? 'Kinh nghiệm' : 'Experience', value: '8+ years' },
+        { label: lang === 'vi' ? 'Kinh nghiệm' : 'Experience', value: '3+ years' },
         { label: lang === 'vi' ? 'Địa điểm' : 'Based in', value: 'Hà Nội, Việt Nam' },
-        { label: 'Email', value: 'phamnam.dev@gmail.com', href: 'mailto:phamnam.dev@gmail.com' },
+        { label: 'Email', value: 'admin@devhunter9x.qzz.io', href: 'mailto:admin@devhunter9x.qzz.io' },
     ];
 
     return (
         <div className="min-h-screen">
-            <header className="fixed top-0 left-0 right-0 z-50 bg-[var(--color-surface)]/95 border-b border-[var(--color-border)] backdrop-blur-sm shadow-sm">
-                <div className="container">
-                    <nav className="flex items-center justify-between h-16">
-                        <Link href={`/${locale}`} className="text-xl font-semibold text-[var(--color-text)]">Blog</Link>
-                        <div className="hidden md:flex items-center gap-8">
-                            <Link href={`/${locale}`} className="text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-primary)]">{tCommon('home')}</Link>
-                            <Link href={`/${locale}/blog`} className="text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-primary)]">{tCommon('blog')}</Link>
-                            <Link href={`/${locale}/about`} className="text-sm font-medium text-[var(--color-primary)]">{tCommon('about')}</Link>
-                        </div>
-                        <div className="flex items-center gap-3">
-                            <ThemeToggle />
-                            <Link
-                                href={`/${otherLocale}/about`}
-                                className="text-sm font-medium px-3 py-1.5 rounded-full border border-[var(--color-border)] hover:border-[var(--color-primary)]"
-                            >
-                                {tCommon('switchLanguage')}
-                            </Link>
-                        </div>
-                    </nav>
-                </div>
-            </header>
+            <Header locale={locale} currentPage="about" altLangHref={`/${otherLocale}/about`} />
 
             <main className="pt-24 pb-16">
                 <div className="container max-w-5xl space-y-12">
@@ -140,11 +110,12 @@ export default function AboutPage() {
                                     <img src={profileImage} alt={lang === 'vi' ? 'Ảnh thẻ tác giả' : 'Author portrait'} className="w-full h-full object-cover" />
                                 </div>
                                 <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-[var(--color-primary)] text-white text-sm shadow-md">
-                                    8+ yrs
+                                    3+ yrs
                                 </div>
                             </div>
                             <div className="flex flex-wrap gap-2 text-xs text-[var(--color-text-secondary)]">
                                 <span className="px-3 py-1 bg-[var(--color-surface-light)] border border-[var(--color-border)] rounded-full">TypeScript</span>
+                                <span className="px-3 py-1 bg-[var(--color-surface-light)] border border-[var(--color-border)] rounded-full">Backend Java</span>
                                 <span className="px-3 py-1 bg-[var(--color-surface-light)] border border-[var(--color-border)] rounded-full">Full-stack</span>
                                 <span className="px-3 py-1 bg-[var(--color-surface-light)] border border-[var(--color-border)] rounded-full">UX-first</span>
                             </div>
@@ -170,7 +141,7 @@ export default function AboutPage() {
                                 ))}
                             </div>
                             <div className="flex flex-wrap gap-3">
-                                <a href="mailto:phamnam.dev@gmail.com" className="btn btn-primary">
+                                <a href="mailto:admin@devhunter9x.qzz.io" className="btn btn-primary">
                                     {lang === 'vi' ? 'Liên hệ' : 'Get in touch'}
                                 </a>
                                 <Link href={`/${locale}/blog`} className="btn btn-secondary">
@@ -182,8 +153,8 @@ export default function AboutPage() {
 
                     <section className="space-y-6">
                         <div className="flex items-center justify-between">
-                            <h2 className="text-2xl font-bold text-[var(--color-text)]">{lang === 'vi' ? 'Kinh nghiệm tiêu biểu' : 'Highlighted experience'}</h2>
-                            <span className="text-sm text-[var(--color-text-muted)]">{lang === 'vi' ? 'Tập trung vào sản phẩm & platform' : 'Product & platform focus'}</span>
+                            <h2 className="text-2xl font-bold text-[var(--color-text)]">{lang === 'vi' ? 'Kinh nghiệm' : 'Experience'}</h2>
+                            <span className="text-sm text-[var(--color-text-muted)]">{lang === 'vi' ? 'Sản phẩm & platform' : 'Product & platform'}</span>
                         </div>
                         <div className="space-y-4">
                             {experiences.map((exp, idx) => (
@@ -267,7 +238,7 @@ export default function AboutPage() {
                         </div>
                     </section>
 
-                    <section className="p-6 md:p-8 bg-[var(--gradient-primary)] text-white rounded-3xl shadow-md">
+                    <section className="p-6 md:p-8 rounded-3xl shadow-md text-white" style={{ background: 'linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)' }}>
                         <div className="md:flex md:items-center md:justify-between gap-4">
                             <div className="space-y-2">
                                 <h3 className="text-2xl font-bold">{lang === 'vi' ? 'Cùng xây dựng điều mới mẻ' : 'Let’s build something new'}</h3>
@@ -278,7 +249,7 @@ export default function AboutPage() {
                                 </p>
                             </div>
                             <div className="flex flex-wrap gap-3 mt-4 md:mt-0">
-                                <a href="mailto:phamnam.dev@gmail.com" className="btn btn-secondary bg-white text-[var(--color-primary)] hover:transform-none">
+                                <a href="mailto:admin@devhunter9x.qzz.io" className="btn btn-secondary bg-white text-[var(--color-primary)] hover:transform-none">
                                     {lang === 'vi' ? 'Gửi email' : 'Email me'}
                                 </a>
                                 <Link href={`/${locale}/blog`} className="btn btn-secondary border-white text-white hover:transform-none hover:bg-white/10">
@@ -290,9 +261,7 @@ export default function AboutPage() {
                 </div>
             </main>
 
-            <footer className="py-8 bg-[var(--color-surface)] border-t border-[var(--color-border)]">
-                <div className="container text-center text-[var(--color-text-muted)]">{tCommon('footer.copyright')}</div>
-            </footer>
+            <Footer locale={locale} />
         </div>
     );
 }

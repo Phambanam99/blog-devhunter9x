@@ -146,14 +146,15 @@ export default function DashboardPage() {
 }
 
 function Sidebar({ user, onLogout }: { user: any; onLogout: () => void }) {
+    //using icon from font-awesome
     const menuItems = [
-        { label: 'Dashboard', href: '/admin/dashboard', icon: '📊' },
-        { label: 'Posts', href: '/admin/posts', icon: '📝' },
-        { label: 'Media', href: '/admin/media', icon: '🖼️' },
-        { label: 'Categories', href: '/admin/categories', icon: '📁' },
-        { label: 'Tags', href: '/admin/tags', icon: '🏷️' },
-        { label: 'Users', href: '/admin/users', icon: '👥', adminOnly: true },
-        { label: 'Audit Log', href: '/admin/audit', icon: '📋', adminOnly: true },
+        { label: 'Dashboard', href: '/admin/dashboard', icon: 'fa-solid fa-chart-line' },
+        { label: 'Posts', href: '/admin/posts', icon: 'fa-solid fa-file' },
+        { label: 'Media', href: '/admin/media', icon: 'fa-solid fa-image' },
+        { label: 'Categories', href: '/admin/categories', icon: 'fa-solid fa-folder' },
+        { label: 'Tags', href: '/admin/tags', icon: 'fa-solid fa-tag' },
+        { label: 'Users', href: '/admin/users', icon: 'fa-solid fa-user', adminOnly: true },
+        { label: 'Audit Log', href: '/admin/audit', icon: 'fa-solid fa-file', adminOnly: true },
     ];
 
     return (
@@ -175,7 +176,7 @@ function Sidebar({ user, onLogout }: { user: any; onLogout: () => void }) {
                             href={item.href}
                             className="flex items-center gap-3 px-4 py-3 rounded-lg text-[var(--admin-text-secondary)] hover:bg-[var(--admin-surface-light)] hover:text-[var(--admin-text)] transition-colors"
                         >
-                            <span>{item.icon}</span>
+                            <i className={item.icon}></i>
                             <span>{item.label}</span>
                         </Link>
                     );

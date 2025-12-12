@@ -5,7 +5,8 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { type Locale } from '@/i18n';
-import ThemeToggle from '@/components/ThemeToggle';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import { getPosts, getTranslation, type Post, type PostTranslation } from '@/lib/api';
 
 export default function HomePage() {
@@ -33,7 +34,7 @@ export default function HomePage() {
 
     return (
         <div className="min-h-screen">
-            <Header locale={locale} />
+            <Header locale={locale} currentPage="home" />
             <HeroSection locale={locale} />
             <FeaturedPosts locale={locale} posts={featuredPosts} loading={loading} />
             <LatestPosts locale={locale} posts={latestPosts} loading={loading} />
@@ -43,29 +44,6 @@ export default function HomePage() {
     );
 }
 
-function Header({ locale }: { locale: Locale }) {
-    const t = useTranslations('common');
-    const otherLocale = locale === 'vi' ? 'en' : 'vi';
-
-    return (
-        <header className="fixed top-0 left-0 right-0 z-50 bg-[var(--color-surface)]/95 border-b border-[var(--color-border)] backdrop-blur-sm shadow-sm">
-            <div className="container">
-                <nav className="flex items-center justify-between h-16">
-                    <Link href={`/${locale}`} className="text-xl font-semibold text-[var(--color-text)]">Blog</Link>
-                    <div className="hidden md:flex items-center gap-8">
-                        <Link href={`/${locale}`} className="text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-primary)]">{t('home')}</Link>
-                        <Link href={`/${locale}/blog`} className="text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-primary)]">{t('blog')}</Link>
-                        <Link href={`/${locale}/about`} className="text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-primary)]">{t('about')}</Link>
-                    </div>
-                    <div className="flex items-center gap-3">
-                        <ThemeToggle />
-                        <Link href={`/${otherLocale}`} className="text-sm font-medium px-3 py-1.5 rounded-full border border-[var(--color-border)] hover:border-[var(--color-primary)]">{t('switchLanguage')}</Link>
-                    </div>
-                </nav>
-            </div>
-        </header>
-    );
-}
 
 function HeroSection({ locale }: { locale: Locale }) {
     const t = useTranslations('home');
@@ -210,19 +188,3 @@ function Newsletter({ locale }: { locale: Locale }) {
     );
 }
 
-function Footer({ locale }: { locale: Locale }) {
-    const t = useTranslations('common');
-    return (
-        <footer className="py-12 bg-[var(--color-surface)] border-t border-[var(--color-border)]">
-            <div className="container">
-                <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-                    <div className="text-[var(--color-text-muted)]">{t('footer.copyright')}</div>
-                    <div className="flex items-center gap-6 text-sm">
-                        <Link href={`/${locale}/privacy`} className="text-[var(--color-text-muted)] hover:text-[var(--color-primary)]">{t('footer.privacy')}</Link>
-                        <Link href={`/${locale}/terms`} className="text-[var(--color-text-muted)] hover:text-[var(--color-primary)]">{t('footer.terms')}</Link>
-                    </div>
-                </div>
-            </div>
-        </footer>
-    );
-}

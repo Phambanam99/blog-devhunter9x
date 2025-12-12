@@ -3,12 +3,30 @@
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { useParams, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { type Locale } from '@/i18n';
-import ThemeToggle from '@/components/ThemeToggle';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import { getPosts, getCategories, getTags, getTranslation, type Post, type PostTranslation, type Category, type Tag } from '@/lib/api';
 
+// Wrapper component with Suspense for useSearchParams
 export default function BlogPage() {
+    return (
+        <Suspense fallback={<BlogPageSkeleton />}>
+            <BlogPageContent />
+        </Suspense>
+    );
+}
+
+function BlogPageSkeleton() {
+    return (
+        <div className="min-h-screen flex items-center justify-center">
+            <div className="animate-pulse text-[var(--color-text-muted)]">Loading...</div>
+        </div>
+    );
+}
+
+function BlogPageContent() {
     const params = useParams();
     const searchParams = useSearchParams();
     const locale = (params.locale as Locale) || 'vi';
@@ -59,22 +77,7 @@ export default function BlogPage() {
 
     return (
         <div className="min-h-screen">
-            <header className="fixed top-0 left-0 right-0 z-50 bg-[var(--color-surface)]/95 border-b border-[var(--color-border)] backdrop-blur-sm shadow-sm">
-                <div className="container">
-                    <nav className="flex items-center justify-between h-16">
-                        <Link href={`/${locale}`} className="text-xl font-semibold text-[var(--color-text)]">Blog</Link>
-                        <div className="hidden md:flex items-center gap-8">
-                            <Link href={`/${locale}`} className="text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-primary)]">{tCommon('home')}</Link>
-                            <Link href={`/${locale}/blog`} className="text-sm font-medium text-[var(--color-primary)]">{tCommon('blog')}</Link>
-                                <Link href={`/${locale}/about`} className="text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-primary)]">{tCommon('about')}</Link>
-                        </div>
-                    <div className="flex items-center gap-3">
-                        <ThemeToggle />
-                        <Link href={`/${otherLocale}/blog`} className="text-sm font-medium px-3 py-1.5 rounded-full border border-[var(--color-border)] hover:border-[var(--color-primary)]">{tCommon('switchLanguage')}</Link>
-                    </div>
-                    </nav>
-                </div>
-            </header>
+            <Header locale={locale} currentPage="blog" />
 
             <main className="pt-24 pb-16">
                 <div className="container">
@@ -189,9 +192,7 @@ export default function BlogPage() {
                 </div>
             </main>
 
-            <footer className="py-8 bg-[var(--color-surface)] border-t border-[var(--color-border)]">
-                <div className="container text-center text-[var(--color-text-muted)]">{tCommon('footer.copyright')}</div>
-            </footer>
+            <Footer locale={locale} />
         </div>
     );
 }
