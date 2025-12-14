@@ -6,7 +6,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { ReadingProgress, ReadingToc, CollapsibleToc } from '@/components/ReadingProgress';
 import ScrollToTop from '@/components/ScrollToTop';
-import DOMPurify from 'isomorphic-dompurify';
+import PostContent from '@/components/PostContent';
 
 const API_URL = process.env.BACKEND_URL
     ? `${process.env.BACKEND_URL}/api`
@@ -119,10 +119,10 @@ export default async function BlogPostPage({ params }: { params: Promise<{ local
     const currentTrans = post.translations.find(t => t.locale === locale) || post.translations[0];
     const otherTrans = post.translations.find(t => t.locale !== locale);
     const otherLocale = locale === 'vi' ? 'en' : 'vi';
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://blog.devhunter9x.qzz.io';
 
-    // JSON-LD structured data
-    const jsonLd = {
+    // JSON-LD Article structured data
+    const articleSchema = {
         '@context': 'https://schema.org',
         '@type': 'Article',
         headline: currentTrans.title,
@@ -136,7 +136,8 @@ export default async function BlogPostPage({ params }: { params: Promise<{ local
         },
         publisher: {
             '@type': 'Organization',
-            name: 'Blog',
+            name: 'Blog Devhunter9x',
+            url: siteUrl,
         },
         mainEntityOfPage: {
             '@type': 'WebPage',
@@ -145,12 +146,42 @@ export default async function BlogPostPage({ params }: { params: Promise<{ local
         inLanguage: locale,
     };
 
+    // BreadcrumbList for navigation display in search results
+    const breadcrumbSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+            {
+                '@type': 'ListItem',
+                position: 1,
+                name: locale === 'vi' ? 'Trang chủ' : 'Home',
+                item: `${siteUrl}/${locale}`
+            },
+            {
+                '@type': 'ListItem',
+                position: 2,
+                name: 'Blog',
+                item: `${siteUrl}/${locale}/blog`
+            },
+            {
+                '@type': 'ListItem',
+                position: 3,
+                name: currentTrans.title,
+                item: `${siteUrl}/${locale}/blog/${slug}`
+            }
+        ]
+    };
+
     return (
         <>
             {/* JSON-LD Structured Data */}
             <script
                 type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+            />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
             />
 
             {/* hreflang tags */}
@@ -211,16 +242,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ local
                                 title={locale === 'vi' ? 'Mục lục' : 'Contents'}
                                 targetSelector="#post-content"
                             />
-                            <div
-                                id="post-content"
-                                className="prose prose-lg max-w-none"
-                                dangerouslySetInnerHTML={{
-                                    __html: DOMPurify.sanitize(currentTrans.bodyHtml || currentTrans.body, {
-                                        ADD_TAGS: ['video', 'source'],
-                                        ADD_ATTR: ['controls', 'src', 'type', 'width', 'height', 'poster']
-                                    })
-                                }}
-                            />
+                            <PostContent html={currentTrans.bodyHtml || currentTrans.body} />
 
                             <div className="mt-12 p-6 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)]">
                                 <div className="flex items-center gap-4">

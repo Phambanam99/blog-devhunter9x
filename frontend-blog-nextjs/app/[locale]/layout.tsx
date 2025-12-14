@@ -45,13 +45,13 @@ export async function generateMetadata({
     const { locale } = await params;
 
     const titles = {
-        vi: 'Blog Song Ngữ',
-        en: 'Bilingual Blog',
+        vi: 'Blog dev hunter9x',
+        en: 'Devhunter9x Blog',
     };
 
     const descriptions = {
-        vi: 'Blog song ngữ về công nghệ, lập trình và cuộc sống',
-        en: 'A bilingual blog about technology, programming, and lifestyle',
+        vi: 'Blog devhunter9x về công nghệ, lập trình và cuộc sống',
+        en: 'Devhunter9x Blog about technology, programming, and lifestyle',
     };
 
     return {

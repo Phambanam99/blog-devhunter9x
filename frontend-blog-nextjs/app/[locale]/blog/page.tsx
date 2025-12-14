@@ -79,8 +79,8 @@ function BlogPageContent() {
         <div className="min-h-screen">
             <Header locale={locale} currentPage="blog" />
 
-            <main className="pt-24 pb-16">
-                <div className="container">
+            <main className="bg-[var(--color-surface)] shadow-lg pt-24 pb-16">
+                <div className="max-w-6xl mx-auto px-4 lg:px-8">
                     <h1 className="text-4xl font-bold mb-8 text-[var(--color-text)]">{t('title')}</h1>
 
                     <div className="flex flex-col lg:flex-row gap-8">
@@ -92,7 +92,7 @@ function BlogPageContent() {
                                     placeholder={t('searchPlaceholder')}
                                     value={searchQuery}
                                     onChange={e => { setSearchQuery(e.target.value); setPage(1); }}
-                                    className="w-full px-4 py-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] focus:border-[var(--color-primary)] focus:outline-none shadow-sm"
+                                    className="w-full px-4 py-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-light)] focus:border-[var(--color-primary)] focus:outline-none"
                                 />
                             </div>
 
@@ -106,7 +106,7 @@ function BlogPageContent() {
                                         const trans = getTranslation(post.translations, locale) as PostTranslation | undefined;
                                         if (!trans) return null;
                                         return (
-                                            <article key={post.id} className="group bg-[var(--color-surface)] rounded-2xl overflow-hidden border border-[var(--color-border)] shadow-sm card-hover">
+                                            <article key={post.id} className="group bg-[var(--color-surface-light)] rounded-2xl overflow-hidden border border-[var(--color-border)] card-hover">
                                                 <div className="aspect-[16/10] overflow-hidden bg-[var(--color-surface-light)]">
                                                     {(() => {
                                                         const imageUrl = trans.heroImage?.thumbnailUrl || trans.heroImage?.url;
@@ -150,8 +150,8 @@ function BlogPageContent() {
                         </div>
 
                         {/* Sidebar */}
-                        <aside className="w-full lg:w-72 flex-shrink-0 space-y-8">
-                            <div className="bg-[var(--color-surface)] rounded-2xl p-6 border border-[var(--color-border)]">
+                        <aside className="w-full lg:w-72 flex-shrink-0 space-y-6">
+                            <div className="bg-[var(--color-surface-light)] rounded-2xl p-6 border border-[var(--color-border)]">
                                 <h3 className="font-bold mb-4">{t('categories')}</h3>
                                 <div className="space-y-2">
                                     <button onClick={() => { setSelectedCategory(''); setPage(1); }} className={`block w-full text-left px-3 py-2 rounded-lg transition-colors ${!selectedCategory ? 'bg-[var(--color-primary)] text-white' : 'hover:bg-[var(--color-border)]'}`}>{locale === 'vi' ? 'Tất cả' : 'All'}</button>
@@ -164,7 +164,7 @@ function BlogPageContent() {
                                 </div>
                             </div>
 
-                            <div className="bg-[var(--color-surface)] rounded-2xl p-6 border border-[var(--color-border)]">
+                            <div className="bg-[var(--color-surface-light)] rounded-2xl p-6 border border-[var(--color-border)]">
                                 <h3 className="font-bold mb-4">{t('tags')}</h3>
                                 <div className="flex flex-wrap gap-2">
                                     <button

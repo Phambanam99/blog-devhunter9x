@@ -9,11 +9,13 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@types/prismjs": "^1.26.5",
     "isomorphic-dompurify": "^2.33.0",
     "next": "16.0.7",
     "next-intl": "^4.5.8",
-    "react": "19.2.0",
-    "react-dom": "19.2.0"
+    "prismjs": "^1.30.0",
+    "react": "19.2.1",
+    "react-dom": "19.2.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

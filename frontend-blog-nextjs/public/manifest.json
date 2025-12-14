@@ -1,0 +1,16 @@
+{
+    "name": "Blog Devhunter9x",
+    "short_name": "Devhunter9x",
+    "description": "Blog chia sẻ kiến thức lập trình và công nghệ",
+    "start_url": "/vi",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#6366f1",
+    "icons": [
+        {
+            "src": "/favicon.ico",
+            "sizes": "any",
+            "type": "image/x-icon"
+        }
+    ]
+}

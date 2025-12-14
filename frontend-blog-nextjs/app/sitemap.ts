@@ -12,6 +12,7 @@ interface Post {
     translations: Array<{
         locale: string;
         slug: string;
+        heroImage?: { url: string };
     }>;
 }
 
@@ -68,6 +69,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
                 lastModified: new Date(post.updatedAt),
                 changeFrequency: 'weekly',
                 priority: 0.8,
+                images: trans.heroImage?.url ? [trans.heroImage.url] : undefined,
             });
         }
     }
