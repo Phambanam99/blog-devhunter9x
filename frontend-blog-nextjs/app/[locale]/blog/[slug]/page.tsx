@@ -72,6 +72,65 @@ export async function generateStaticParams() {
     }
 }
 
+// Helper: Get best OG image URL (prefer PNG/JPG over WebP for social platform compatibility)
+// Zalo, Messenger, etc. may not support WebP, so we prioritize non-WebP formats
+function getOgImageUrl(heroImage: any, siteUrl: string): { url: string; type: string } {
+    const fallbackImage = `${siteUrl}/og-image.png`;
+
+    if (!heroImage) {
+        return { url: fallbackImage, type: 'image/png' };
+    }
+
+    const variants = heroImage.variants;
+
+    // Priority order: PNG/JPG variants first, then original URL, finally fallback
+    // This ensures maximum compatibility with Zalo, Messenger, etc.
+    const pngJpgVariants = [
+        variants?.og,      // Best: OG optimized 1200x630 PNG
+        variants?.lg_png,  // Large PNG fallback
+        variants?.md_png,
+        variants?.lg_jpg,
+        variants?.md_jpg,
+    ].filter(Boolean);
+
+    // Check if original URL is PNG/JPG (not WebP)
+    const originalUrl = heroImage.url || '';
+    const isOriginalPngJpg = /\.(png|jpe?g)$/i.test(originalUrl);
+
+    // Check if any variant is PNG/JPG
+    const lgMdVariants = [variants?.lg, variants?.md].filter(Boolean);
+    const nonWebpVariant = lgMdVariants.find(v => !/\.webp$/i.test(v));
+
+    let imageUrl: string;
+    let imageType: string;
+
+    if (pngJpgVariants.length > 0) {
+        // Best case: explicit PNG/JPG variant
+        imageUrl = pngJpgVariants[0];
+        imageType = /\.png$/i.test(imageUrl) ? 'image/png' : 'image/jpeg';
+    } else if (nonWebpVariant) {
+        // Second best: non-WebP variant
+        imageUrl = nonWebpVariant;
+        imageType = /\.png$/i.test(imageUrl) ? 'image/png' : 'image/jpeg';
+    } else if (isOriginalPngJpg) {
+        // Third: original URL if it's PNG/JPG
+        imageUrl = originalUrl;
+        imageType = /\.png$/i.test(imageUrl) ? 'image/png' : 'image/jpeg';
+    } else if (variants?.lg || variants?.md || originalUrl) {
+        // Fallback to WebP if that's all we have (better than nothing)
+        imageUrl = variants?.lg || variants?.md || originalUrl;
+        imageType = 'image/webp';
+    } else {
+        // Final fallback: default OG image
+        return { url: fallbackImage, type: 'image/png' };
+    }
+
+    // Ensure absolute URL
+    const fullUrl = imageUrl.startsWith('http') ? imageUrl : `${siteUrl}${imageUrl}`;
+
+    return { url: fullUrl, type: imageType };
+}
+
 // Generate metadata with hreflang
 export async function generateMetadata({ params }: { params: Promise<{ locale: string; slug: string }> }): Promise<Metadata> {
     const { locale, slug } = await params;
@@ -90,6 +149,10 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
         languages[trans.locale] = `${siteUrl}/${trans.locale}/blog/${trans.slug}`;
     }
 
+    // Get OG image with platform compatibility (PNG/JPG preferred over WebP)
+    const ogImage = getOgImageUrl(currentTrans.heroImage, siteUrl);
+    const fallbackOgImage = `${siteUrl}/og-image.png`;
+
     return {
         title: currentTrans.metaTitle || currentTrans.title,
         description: currentTrans.metaDescription || currentTrans.excerpt,
@@ -102,25 +165,13 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
             publishedTime: post.createdAt,
             modifiedTime: post.updatedAt,
             authors: [post.author?.name],
-            images: currentTrans.heroImage ? (() => {
-                // Prefer lg WebP variant for og:image (smaller, faster for social platforms)
-                const variants = (currentTrans.heroImage as any).variants;
-                const imageUrl = variants?.lg || variants?.md || currentTrans.heroImage.url;
-                const fullUrl = imageUrl.startsWith('http') ? imageUrl : `${siteUrl}${imageUrl}`;
-                const isWebp = fullUrl.includes('.webp');
-                return [{
-                    url: fullUrl,
+            images: [
+                {
+                    url: ogImage.url,
                     width: 1200,
                     height: 630,
                     alt: currentTrans.title,
-                    type: isWebp ? 'image/webp' : 'image/png',
-                }];
-            })() : [
-                {
-                    url: `${siteUrl}/og-image.png`,
-                    width: 1200,
-                    height: 630,
-                    alt: 'Blog Devhunter9x',
+                    type: ogImage.type,
                 },
             ],
             locale: locale,
@@ -130,7 +181,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
             card: 'summary_large_image',
             title: currentTrans.metaTitle || currentTrans.title,
             description: currentTrans.metaDescription || currentTrans.excerpt,
-            images: currentTrans.heroImage?.url ? [currentTrans.heroImage.url] : [],
+            // Twitter images must be absolute URLs
+            images: [ogImage.url],
         },
         alternates: {
             canonical: `${siteUrl}/${locale}/blog/${slug}`,

@@ -25,6 +25,11 @@ interface ImageVariants {
     lg?: string;
     webp?: string;
     thumbnail?: string;
+    // PNG variants for social media (Zalo, Messenger compatibility)
+    sm_png?: string;
+    md_png?: string;
+    lg_png?: string;
+    og?: string;  // Open Graph optimized (1200x630)
 }
 
 @Injectable()
@@ -55,7 +60,14 @@ export class MediaService {
     }
 
     private async ensureDirectories() {
-        const dirs = ['', 'images', 'images/original', 'images/sm', 'images/md', 'images/lg', 'images/webp', 'images/thumbnail', 'videos'];
+        const dirs = [
+            '', 'images', 'images/original',
+            'images/sm', 'images/md', 'images/lg',
+            'images/webp', 'images/thumbnail',
+            // PNG directories for social media
+            'images/lg_png', 'images/og',
+            'videos'
+        ];
         for (const dir of dirs) {
             const fullPath = path.join(this.uploadDir, dir);
             try {
@@ -214,6 +226,28 @@ export class MediaService {
             .toFile(webpPath);
         variants.webp = `${this.mediaUrl}/images/webp/${webpFilename}`;
 
+        // ===== PNG variants for social media (Zalo, Messenger, FB compatibility) =====
+
+        // Large PNG (1200px width) - fallback for og:image
+        if (width > 1200) {
+            const lgPngFilename = `${baseName}.png`;
+            const lgPngPath = path.join(this.uploadDir, 'images/lg_png', lgPngFilename);
+            await sharp(buffer)
+                .resize(1200, null, { withoutEnlargement: true })
+                .png({ quality: 85, compressionLevel: 6 })
+                .toFile(lgPngPath);
+            variants.lg_png = `${this.mediaUrl}/images/lg_png/${lgPngFilename}`;
+        }
+
+        // Open Graph optimized (1200x630) - exact OG dimensions for social sharing
+        const ogFilename = `${baseName}.png`;
+        const ogPath = path.join(this.uploadDir, 'images/og', ogFilename);
+        await sharp(buffer)
+            .resize(1200, 630, { fit: 'cover', position: 'center' })
+            .png({ quality: 85, compressionLevel: 6 })
+            .toFile(ogPath);
+        variants.og = `${this.mediaUrl}/images/og/${ogFilename}`;
+
         return { url, thumbnailUrl, width, height, variants };
     }
 
@@ -355,6 +389,9 @@ export class MediaService {
                 path.join(this.uploadDir, 'images/md', `${baseName}.webp`),
                 path.join(this.uploadDir, 'images/lg', `${baseName}.webp`),
                 path.join(this.uploadDir, 'images/webp', `${baseName}.webp`),
+                // PNG variants for social media
+                path.join(this.uploadDir, 'images/lg_png', `${baseName}.png`),
+                path.join(this.uploadDir, 'images/og', `${baseName}.png`),
             ];
 
             for (const p of paths) {
