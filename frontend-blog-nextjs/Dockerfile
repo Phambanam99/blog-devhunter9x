@@ -39,7 +39,7 @@ COPY lib ./lib
 
 # Build arguments for public environment variables
 ARG NEXT_PUBLIC_API_URL=/api
-ARG NEXT_PUBLIC_SITE_URL=https://blog.devhunter9x.qzz.io
+ARG NEXT_PUBLIC_SITE_URL=https://devhunter9x.com
 ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
 ENV NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL}
 

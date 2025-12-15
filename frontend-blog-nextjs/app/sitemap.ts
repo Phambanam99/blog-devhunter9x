@@ -4,7 +4,7 @@ const API_URL = process.env.BACKEND_URL
     ? `${process.env.BACKEND_URL}/api`
     : (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api');
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://blog.devhunter9x.qzz.io';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://devhunter9x.com';
 
 interface Post {
     id: string;

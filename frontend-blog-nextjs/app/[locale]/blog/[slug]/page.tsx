@@ -96,20 +96,26 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
         openGraph: {
             title: currentTrans.metaTitle || currentTrans.title,
             description: currentTrans.metaDescription || currentTrans.excerpt,
+            url: `${siteUrl}/${locale}/blog/${slug}`,
+            siteName: 'DevHunter9x Blog',
             type: 'article',
             publishedTime: post.createdAt,
             modifiedTime: post.updatedAt,
             authors: [post.author?.name],
-            images: currentTrans.heroImage?.url ? [
-                {
-                    url: currentTrans.heroImage.url.startsWith('http')
-                        ? currentTrans.heroImage.url
-                        : `${siteUrl}${currentTrans.heroImage.url}`,
+            images: currentTrans.heroImage ? (() => {
+                // Prefer lg WebP variant for og:image (smaller, faster for social platforms)
+                const variants = (currentTrans.heroImage as any).variants;
+                const imageUrl = variants?.lg || variants?.md || currentTrans.heroImage.url;
+                const fullUrl = imageUrl.startsWith('http') ? imageUrl : `${siteUrl}${imageUrl}`;
+                const isWebp = fullUrl.includes('.webp');
+                return [{
+                    url: fullUrl,
                     width: 1200,
                     height: 630,
                     alt: currentTrans.title,
-                },
-            ] : [
+                    type: isWebp ? 'image/webp' : 'image/png',
+                }];
+            })() : [
                 {
                     url: `${siteUrl}/og-image.png`,
                     width: 1200,
@@ -144,7 +150,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ local
     const currentTrans = post.translations.find(t => t.locale === locale) || post.translations[0];
     const otherTrans = post.translations.find(t => t.locale !== locale);
     const otherLocale = locale === 'vi' ? 'en' : 'vi';
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://blog.devhunter9x.qzz.io';
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://devhunter9x.com';
 
     // JSON-LD Article structured data
     const articleSchema = {
@@ -287,8 +293,11 @@ export default async function BlogPostPage({ params }: { params: Promise<{ local
                             </div>
 
                             {/* Feedback CTA */}
-                            <div className="mt-8 p-6 bg-gradient-to-r from-[var(--color-primary)]/10 to-[var(--color-secondary)]/10 rounded-2xl border border-[var(--color-primary)]/20">
+                            <div className="mt-8 p-6 bg-[var(--color-surface-light)] rounded-2xl border border-[var(--color-border)]">
                                 <div className="text-center">
+                                    <div className="w-12 h-12 mx-auto mb-4 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(37, 99, 235, 0.1)' }}>
+                                        <span className="text-xl" style={{ color: '#2563eb' }}>💬</span>
+                                    </div>
                                     <h3 className="text-xl font-bold mb-2 text-[var(--color-text)]">
                                         {locale === 'vi' ? 'Bạn có góp ý cho bài viết này?' : 'Have feedback for this article?'}
                                     </h3>
@@ -299,9 +308,10 @@ export default async function BlogPostPage({ params }: { params: Promise<{ local
                                     </p>
                                     <a
                                         href={`mailto:admin@devhunter9x.qzz.io?subject=${encodeURIComponent(locale === 'vi' ? `Góp ý: ${currentTrans.title}` : `Feedback: ${currentTrans.title}`)}`}
-                                        className="inline-flex items-center gap-2 px-6 py-3 bg-[var(--color-primary)] text-white rounded-xl font-semibold hover:bg-[var(--color-primary-dark)] transition-colors"
+                                        className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-colors shadow-md hover:shadow-lg"
+                                        style={{ backgroundColor: '#2563eb', color: '#ffffff' }}
                                     >
-                                        <i className="fa-solid fa-envelope"></i>
+                                        <span>✉️</span>
                                         {locale === 'vi' ? 'Gửi góp ý' : 'Send Feedback'}
                                     </a>
                                 </div>

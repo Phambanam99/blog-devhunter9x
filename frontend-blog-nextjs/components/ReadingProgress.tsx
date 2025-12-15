@@ -96,11 +96,11 @@ export function ReadingToc({
     const handleClick = (id: string) => {
         const el = document.getElementById(id);
         if (!el) return;
-        // Account for fixed header (approx 80px) + some padding
-        const headerOffset = 100;
-        const elementPosition = el.getBoundingClientRect().top;
-        const offsetPosition = elementPosition + window.scrollY - headerOffset;
-        window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+        // Use requestAnimationFrame to wait for layout stability (images, etc.)
+        requestAnimationFrame(() => {
+            // Use native scrollIntoView - works with CSS scroll-margin-top
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
     };
 
     useEffect(() => {
@@ -157,11 +157,11 @@ export function CollapsibleToc({
     const handleClick = (id: string) => {
         const el = document.getElementById(id);
         if (!el) return;
-        // Account for fixed header (approx 80px) + some padding
-        const headerOffset = 100;
-        const elementPosition = el.getBoundingClientRect().top;
-        const offsetPosition = elementPosition + window.scrollY - headerOffset;
-        window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+        // Use requestAnimationFrame to wait for layout stability (images, etc.)
+        requestAnimationFrame(() => {
+            // Use native scrollIntoView - works with CSS scroll-margin-top
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
         setIsOpen(false);
     };
 
