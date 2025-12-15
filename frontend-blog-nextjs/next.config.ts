@@ -7,9 +7,10 @@ const nextConfig: NextConfig = {
   // Enable standalone output for Docker deployment
   output: 'standalone',
 
-  // Enable ISR
+  // Enable ISR and performance optimizations
   experimental: {
-    // Enable PPR for better performance
+    // Optimize CSS - removes unused CSS and inlines critical CSS
+    optimizeCss: true,
   },
 
   // Image domains for external images

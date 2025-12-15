@@ -26,7 +26,16 @@ interface Post {
         bodyHtml: string;
         metaTitle: string;
         metaDescription: string;
-        heroImage?: { url: string };
+        heroImage?: {
+            url: string;
+            variants?: {
+                sm?: string;
+                md?: string;
+                lg?: string;
+                webp?: string;
+                thumbnail?: string;
+            };
+        };
     }>;
     categories: Array<{ category: { translations: Array<{ locale: string; name: string }> } }>;
     tags: Array<{ tag: { translations: Array<{ locale: string; name: string }> } }>;
@@ -91,7 +100,23 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
             publishedTime: post.createdAt,
             modifiedTime: post.updatedAt,
             authors: [post.author?.name],
-            images: currentTrans.heroImage?.url ? [currentTrans.heroImage.url] : [],
+            images: currentTrans.heroImage?.url ? [
+                {
+                    url: currentTrans.heroImage.url.startsWith('http')
+                        ? currentTrans.heroImage.url
+                        : `${siteUrl}${currentTrans.heroImage.url}`,
+                    width: 1200,
+                    height: 630,
+                    alt: currentTrans.title,
+                },
+            ] : [
+                {
+                    url: `${siteUrl}/og-image.png`,
+                    width: 1200,
+                    height: 630,
+                    alt: 'Blog Devhunter9x',
+                },
+            ],
             locale: locale,
             alternateLocale: locales.filter(l => l !== locale),
         },
@@ -218,9 +243,16 @@ export default async function BlogPostPage({ params }: { params: Promise<{ local
                         </div>
 
                         <div className="bg-[var(--color-surface)] rounded-2xl p-6 md:p-8 border border-[var(--color-border)] shadow-sm">
-                            {currentTrans.heroImage?.url && (
+                            {currentTrans.heroImage && (
                                 <div className="aspect-[16/9] rounded-2xl overflow-hidden mb-8">
-                                    <img src={currentTrans.heroImage.url} alt={currentTrans.title} className="w-full h-full object-cover" />
+                                    <img
+                                        src={currentTrans.heroImage.variants?.lg || currentTrans.heroImage.variants?.md || currentTrans.heroImage.url}
+                                        alt={currentTrans.title}
+                                        className="w-full h-full object-cover"
+                                        fetchPriority="high"
+                                        width={1200}
+                                        height={675}
+                                    />
                                 </div>
                             )}
 
@@ -251,6 +283,27 @@ export default async function BlogPostPage({ params }: { params: Promise<{ local
                                         <h3 className="font-bold text-lg">{post.author?.name}</h3>
                                         <p className="text-[var(--color-text-muted)]">{locale === 'vi' ? 'Tác giả' : 'Author'}</p>
                                     </div>
+                                </div>
+                            </div>
+
+                            {/* Feedback CTA */}
+                            <div className="mt-8 p-6 bg-gradient-to-r from-[var(--color-primary)]/10 to-[var(--color-secondary)]/10 rounded-2xl border border-[var(--color-primary)]/20">
+                                <div className="text-center">
+                                    <h3 className="text-xl font-bold mb-2 text-[var(--color-text)]">
+                                        {locale === 'vi' ? 'Bạn có góp ý cho bài viết này?' : 'Have feedback for this article?'}
+                                    </h3>
+                                    <p className="text-[var(--color-text-secondary)] mb-4">
+                                        {locale === 'vi'
+                                            ? 'Mọi đóng góp ý kiến của bạn đều rất có giá trị và giúp chúng tôi cải thiện nội dung. Hãy gửi email cho chúng tôi!'
+                                            : 'Your feedback is valuable and helps us improve our content. Feel free to email us!'}
+                                    </p>
+                                    <a
+                                        href={`mailto:admin@devhunter9x.qzz.io?subject=${encodeURIComponent(locale === 'vi' ? `Góp ý: ${currentTrans.title}` : `Feedback: ${currentTrans.title}`)}`}
+                                        className="inline-flex items-center gap-2 px-6 py-3 bg-[var(--color-primary)] text-white rounded-xl font-semibold hover:bg-[var(--color-primary-dark)] transition-colors"
+                                    >
+                                        <i className="fa-solid fa-envelope"></i>
+                                        {locale === 'vi' ? 'Gửi góp ý' : 'Send Feedback'}
+                                    </a>
                                 </div>
                             </div>
                         </div>

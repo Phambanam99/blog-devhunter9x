@@ -37,9 +37,11 @@ COPY app ./app
 COPY components ./components
 COPY lib ./lib
 
-# Build arguments
+# Build arguments for public environment variables
 ARG NEXT_PUBLIC_API_URL=/api
+ARG NEXT_PUBLIC_SITE_URL=https://blog.devhunter9x.qzz.io
 ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+ENV NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL}
 
 # Disable telemetry during build
 ENV NEXT_TELEMETRY_DISABLED=1

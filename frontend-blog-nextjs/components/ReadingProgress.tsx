@@ -96,7 +96,11 @@ export function ReadingToc({
     const handleClick = (id: string) => {
         const el = document.getElementById(id);
         if (!el) return;
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // Account for fixed header (approx 80px) + some padding
+        const headerOffset = 100;
+        const elementPosition = el.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.scrollY - headerOffset;
+        window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
     };
 
     useEffect(() => {
@@ -153,7 +157,11 @@ export function CollapsibleToc({
     const handleClick = (id: string) => {
         const el = document.getElementById(id);
         if (!el) return;
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // Account for fixed header (approx 80px) + some padding
+        const headerOffset = 100;
+        const elementPosition = el.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.scrollY - headerOffset;
+        window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
         setIsOpen(false);
     };
 

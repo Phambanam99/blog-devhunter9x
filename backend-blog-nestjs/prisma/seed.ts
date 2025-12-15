@@ -334,33 +334,33 @@ async function main() {
 
     // Post translations
     const enTranslationData = {
-        title: 'Welcome to the Bilingual Blog',
-        slug: 'welcome-to-the-bilingual-blog',
+        title: 'Welcome to the Devhunter9x Blog',
+        slug: 'welcome-to-the-devhunter9x-blog',
         excerpt: 'This is the first sample post on our bilingual blog.',
         body: '# Welcome!\n\nThis is the first sample post.',
         bodyHtml: '<h1>Welcome!</h1><p>This is the first sample post.</p>',
-        metaTitle: 'Welcome to the Bilingual Blog',
+        metaTitle: 'Welcome to the Devhunter9x Blog',
         metaDescription: 'A Vietnamese-English bilingual blog.',
         heroImageId: heroImage.id,
         schemaType: 'BlogPosting',
         schemaData: {
             type: 'BlogPosting',
-            headline: 'Welcome to the Bilingual Blog',
+            headline: 'Welcome to the Devhunter9x Blog',
         },
     };
     const viTranslationData = {
-        title: 'Chao mung den voi Blog Song Ngu',
-        slug: 'chao-mung-den-voi-blog-song-ngu',
-        excerpt: 'Day la bai viet mau dau tien tren blog song ngu.',
+        title: 'Chao mung den voi Blog devhunter9x',
+        slug: 'chao-mung-den-voi-blog-devhunter9x',
+        excerpt: 'Day la bai viet mau dau tien tren blog devhunter9x.',
         body: '# Chao mung!\n\nDay la bai viet mau dau tien.',
         bodyHtml: '<h1>Chao mung!</h1><p>Day la bai viet mau dau tien.</p>',
-        metaTitle: 'Chao mung den voi Blog Song Ngu',
-        metaDescription: 'Blog song ngu Viet-Anh.',
+        metaTitle: 'Chao mung den voi Blog devhunter9x',
+        metaDescription: 'Blog devhunter9x Viet-Anh.',
         heroImageId: heroImage.id,
         schemaType: 'BlogPosting',
         schemaData: {
             type: 'BlogPosting',
-            headline: 'Chao mung den voi Blog Song Ngu',
+            headline: 'Chao mung den voi Blog devhunter9x',
         },
     };
 

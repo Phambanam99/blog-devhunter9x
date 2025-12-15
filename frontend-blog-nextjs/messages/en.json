@@ -56,7 +56,10 @@
         "copied": "Copied!",
         "updatedOn": "Updated on",
         "minRead": "min read",
-        "comments": "Comments"
+        "comments": "Comments",
+        "feedbackTitle": "Have feedback for this article?",
+        "feedbackDescription": "Your feedback is valuable and helps us improve our content. Feel free to email us!",
+        "feedbackButton": "Send Feedback"
     },
     "category": {
         "title": "Category: {name}",

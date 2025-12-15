@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { getAdminMedia, uploadMedia, deleteMedia } from '@/lib/admin-api';
+import AdminSidebar from '../components/AdminSidebar';
 
 interface MediaItem {
     id: string;
@@ -113,7 +114,7 @@ export default function MediaPage() {
 
     return (
         <div className="flex">
-            <Sidebar user={user} onLogout={logout} />
+            <AdminSidebar user={user} onLogout={logout} />
 
             <main className="admin-main p-8">
                 {/* Header */}
@@ -308,64 +309,5 @@ export default function MediaPage() {
                 </div>
             </main>
         </div>
-    );
-}
-
-function Sidebar({ user, onLogout }: { user: any; onLogout: () => void }) {
-    const menuItems = [
-        { label: 'Dashboard', href: '/admin/dashboard', icon: '📊' },
-        { label: 'Posts', href: '/admin/posts', icon: '📝' },
-        { label: 'Media', href: '/admin/media', icon: '🖼️', active: true },
-        { label: 'Categories', href: '/admin/categories', icon: '📁' },
-        { label: 'Tags', href: '/admin/tags', icon: '🏷️' },
-        { label: 'Users', href: '/admin/users', icon: '👥', adminOnly: true },
-        { label: 'Audit Log', href: '/admin/audit', icon: '📋', adminOnly: true },
-    ];
-
-    return (
-        <aside className="admin-sidebar">
-            <div className="p-6 border-b border-[var(--admin-border)]">
-                <Link href="/admin/dashboard" className="text-xl font-bold text-[var(--admin-primary)]">
-                    Blog CMS
-                </Link>
-            </div>
-
-            <nav className="flex-grow p-4 space-y-1">
-                {menuItems.map((item) => {
-                    if (item.adminOnly && user?.role !== 'ADMIN') return null;
-                    return (
-                        <Link
-                            key={item.href}
-                            href={item.href}
-                            className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${item.active
-                                ? 'bg-[var(--admin-primary)] text-white'
-                                : 'text-[var(--admin-text-secondary)] hover:bg-[var(--admin-surface-light)] hover:text-[var(--admin-text)]'
-                                }`}
-                        >
-                            <span>{item.icon}</span>
-                            <span>{item.label}</span>
-                        </Link>
-                    );
-                })}
-            </nav>
-
-            <div className="p-4 border-t border-[var(--admin-border)]">
-                <div className="flex items-center gap-3 px-4 py-3">
-                    <div className="w-10 h-10 rounded-full bg-[var(--admin-primary)] flex items-center justify-center text-white font-bold">
-                        {user?.name?.charAt(0) || 'U'}
-                    </div>
-                    <div className="flex-grow">
-                        <p className="font-medium text-sm">{user?.name}</p>
-                        <p className="text-xs text-[var(--admin-text-muted)]">{user?.role}</p>
-                    </div>
-                </div>
-                <button
-                    onClick={onLogout}
-                    className="w-full mt-2 px-4 py-2 text-sm text-[var(--admin-text-muted)] hover:text-[var(--admin-danger)] transition-colors text-left"
-                >
-                    🚪 Sign out
-                </button>
-            </div>
-        </aside>
     );
 }

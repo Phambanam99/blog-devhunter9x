@@ -1,4 +1,13 @@
 import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+
+// Self-hosted Inter font with Vietnamese subset for faster loading
+const inter = Inter({
+    subsets: ['latin', 'vietnamese'],
+    display: 'swap',
+    variable: '--font-sans',
+    preload: true,
+});
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://blog.devhunter9x.qzz.io';
 
@@ -63,10 +72,20 @@ export const metadata: Metadata = {
         google: 'google12fc1637dffd91d0',
     },
     openGraph: {
+        title: 'Blog Devhunter9x - Chia sẻ kiến thức lập trình',
+        description: 'Blog chia sẻ kiến thức về lập trình, công nghệ, và cuộc sống từ Devhunter9x',
         siteName: 'Blog Devhunter9x',
         locale: 'vi_VN',
         type: 'website',
         url: SITE_URL,
+        images: [
+            {
+                url: `${SITE_URL}/og-image.png`,
+                width: 1200,
+                height: 630,
+                alt: 'Blog Devhunter9x',
+            },
+        ],
     },
     twitter: {
         card: 'summary_large_image',
@@ -97,13 +116,34 @@ export default function RootLayout({
     return (
         <html lang="en" suppressHydrationWarning>
             <head>
+                {/* Critical: Viewport meta for mobile */}
+                <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+                {/* Preconnect to external resources for faster loading */}
+                <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossOrigin="anonymous" />
+
+                {/* Font Awesome - load only solid icons (used in admin), defer loading */}
                 <link
                     rel="stylesheet"
-                    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-                    integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+                    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/fontawesome.min.css"
                     crossOrigin="anonymous"
-                    referrerPolicy="no-referrer"
+                    media="print"
+                    // @ts-ignore
+                    onLoad="this.media='all'"
                 />
+                <link
+                    rel="stylesheet"
+                    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/solid.min.css"
+                    crossOrigin="anonymous"
+                    media="print"
+                    // @ts-ignore
+                    onLoad="this.media='all'"
+                />
+                <noscript>
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/fontawesome.min.css" />
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/solid.min.css" />
+                </noscript>
+
                 {/* JSON-LD Structured Data */}
                 <script
                     type="application/ld+json"
@@ -114,7 +154,7 @@ export default function RootLayout({
                     dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
                 />
             </head>
-            <body suppressHydrationWarning>
+            <body className={inter.variable} suppressHydrationWarning>
                 <script dangerouslySetInnerHTML={{ __html: themeScript }} />
                 {children}
             </body>

@@ -7,7 +7,7 @@ import { Suspense, useEffect, useState } from 'react';
 import { type Locale } from '@/i18n';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { getPosts, getCategories, getTags, getTranslation, type Post, type PostTranslation, type Category, type Tag } from '@/lib/api';
+import { getPosts, getCategories, getTags, getTranslation, getOptimizedImageUrl, type Post, type PostTranslation, type Category, type Tag } from '@/lib/api';
 
 // Wrapper component with Suspense for useSearchParams
 export default function BlogPage() {
@@ -97,11 +97,23 @@ function BlogPageContent() {
                             </div>
 
                             {loading ? (
-                                <div className="text-center py-12 animate-pulse text-[var(--color-text-muted)]">Loading...</div>
+                                // Skeleton loading - matches post cards layout to prevent CLS
+                                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    {[...Array(6)].map((_, i) => (
+                                        <div key={i} className="bg-[var(--color-surface-light)] rounded-2xl overflow-hidden border border-[var(--color-border)] animate-pulse">
+                                            <div className="aspect-[16/10] bg-[var(--color-border)]" />
+                                            <div className="p-5">
+                                                <div className="h-4 bg-[var(--color-border)] rounded w-1/3 mb-3" />
+                                                <div className="h-6 bg-[var(--color-border)] rounded w-full mb-2" />
+                                                <div className="h-4 bg-[var(--color-border)] rounded w-2/3" />
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
                             ) : posts.length === 0 ? (
                                 <div className="text-center py-12 text-[var(--color-text-muted)]">{t('noResults')}</div>
                             ) : (
-                                <div className="grid md:grid-cols-2 gap-6">
+                                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                                     {posts.map(post => {
                                         const trans = getTranslation(post.translations, locale) as PostTranslation | undefined;
                                         if (!trans) return null;
@@ -109,7 +121,10 @@ function BlogPageContent() {
                                             <article key={post.id} className="group bg-[var(--color-surface-light)] rounded-2xl overflow-hidden border border-[var(--color-border)] card-hover">
                                                 <div className="aspect-[16/10] overflow-hidden bg-[var(--color-surface-light)]">
                                                     {(() => {
-                                                        const imageUrl = trans.heroImage?.thumbnailUrl || trans.heroImage?.url;
+                                                        const imageUrl = getOptimizedImageUrl(trans.heroImage, 'md');
+                                                        // Use index from posts.indexOf(post) for eager loading first row
+                                                        const postIndex = posts.indexOf(post);
+                                                        const isAboveFold = postIndex < 3; // First row of 3 columns
                                                         if (!imageUrl) {
                                                             return (
                                                                 <div className="w-full h-full flex items-center justify-center text-[var(--color-text-muted)] text-3xl font-bold bg-[var(--color-surface-light)]">
@@ -122,7 +137,10 @@ function BlogPageContent() {
                                                                 src={imageUrl}
                                                                 alt={trans.title}
                                                                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                                                                loading="lazy"
+                                                                loading={isAboveFold ? "eager" : "lazy"}
+                                                                fetchPriority={postIndex === 0 ? "high" : "auto"}
+                                                                width={800}
+                                                                height={500}
                                                             />
                                                         );
                                                     })()}

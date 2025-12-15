@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import { type Locale } from '@/i18n';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { getPosts, getTranslation, type Post, type PostTranslation } from '@/lib/api';
+import { getPosts, getTranslation, getOptimizedImageUrl, type Post, type PostTranslation } from '@/lib/api';
 
 export default function HomePage() {
     const params = useParams();
@@ -19,10 +19,10 @@ export default function HomePage() {
     useEffect(() => {
         async function fetchData() {
             try {
-                const result = await getPosts({ locale, limit: 5 });
+                const result = await getPosts({ locale, limit: 6 });
                 const posts = result.data || [];
-                setFeaturedPosts(posts.slice(0, 2));
-                setLatestPosts(posts.slice(2, 5));
+                setFeaturedPosts(posts.slice(0, 3));
+                setLatestPosts(posts.slice(3, 6));
             } catch (err) {
                 console.error('Failed to fetch posts:', err);
             } finally {
@@ -97,20 +97,34 @@ function FeaturedPosts({ locale, posts, loading }: { locale: Locale; posts: Post
                 <h2 className="text-3xl md:text-4xl font-bold text-[var(--color-text)]">{t('featured')}</h2>
                 <Link href={`/${locale}/blog`} className="text-[var(--color-primary)] hover:underline font-medium">{t('viewAll')} →</Link>
             </div>
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid md:grid-cols-3 gap-6">
                 {posts.map((post, index) => {
                     const trans = getTranslation(post.translations, locale) as PostTranslation | undefined;
                     if (!trans) return null;
                     return (
                         <article key={post.id} className="group bg-[var(--color-surface-light)] rounded-2xl overflow-hidden border border-[var(--color-border)] card-hover animate-fadeIn" style={{ animationDelay: `${index * 0.1}s` }}>
                             <div className="aspect-[16/9] overflow-hidden bg-[var(--color-surface-light)]">
-                                {trans.heroImage?.url ? (
-                                    <img src={trans.heroImage.url} alt={trans.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                                ) : (
-                                    <div className="w-full h-full flex items-center justify-center text-[var(--color-text-muted)] text-4xl font-bold bg-[var(--color-surface-light)]">
-                                        {trans.title.charAt(0)}
-                                    </div>
-                                )}
+                                {(() => {
+                                    const imageUrl = getOptimizedImageUrl(trans.heroImage, 'md');
+                                    // First image loads eagerly for better LCP, rest lazy load
+                                    const isFirstImage = index === 0;
+                                    return imageUrl ? (
+                                        <img
+                                            src={imageUrl}
+                                            alt={trans.title}
+                                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                            loading={isFirstImage ? "eager" : "lazy"}
+                                            fetchPriority={isFirstImage ? "high" : "auto"}
+                                            decoding={isFirstImage ? "sync" : "async"}
+                                            width={800}
+                                            height={450}
+                                        />
+                                    ) : (
+                                        <div className="w-full h-full flex items-center justify-center text-[var(--color-text-muted)] text-4xl font-bold bg-[var(--color-surface-light)]">
+                                            {trans.title.charAt(0)}
+                                        </div>
+                                    );
+                                })()}
                             </div>
                             <div className="p-6">
                                 <div className="flex items-center gap-4 text-sm text-[var(--color-text-muted)] mb-3">
@@ -166,7 +180,8 @@ function LatestPosts({ locale, posts, loading }: { locale: Locale; posts: Post[]
 function Newsletter({ locale }: { locale: Locale }) {
     const t = useTranslations('common');
     return (
-        <section className="py-16 px-4 lg:px-8 border-t border-[var(--color-border)]">
+        // min-h prevents CLS by reserving space before content loads
+        <section className="py-16 px-4 lg:px-8 border-t border-[var(--color-border)] min-h-[320px]">
             <div className="max-w-3xl mx-auto bg-[var(--color-surface-light)] border border-[var(--color-border)] rounded-2xl p-10 text-center">
                 <h2 className="text-3xl md:text-4xl font-bold mb-3 text-[var(--color-text)]">{t('newsletter')}</h2>
                 <p className="text-lg text-[var(--color-text-secondary)] mb-8">

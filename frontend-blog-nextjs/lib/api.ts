@@ -109,6 +109,39 @@ export function getTranslation<T extends { locale: string }>(
     return translations.find((t) => t.locale === locale) || translations[0];
 }
 
+/**
+ * Get optimized image URL from media object
+ * Prefers WebP variants for better performance
+ * @param media Media object with variants
+ * @param size 'sm' (480px) | 'md' (800px) | 'lg' (1200px) | 'thumbnail' (150px) | 'full'
+ */
+export function getOptimizedImageUrl(
+    media: Media | null | undefined,
+    size: 'thumbnail' | 'sm' | 'md' | 'lg' | 'full' = 'md'
+): string | null {
+    if (!media) return null;
+
+    // Try to get the requested variant
+    if (media.variants) {
+        // Prefer WebP for the requested size
+        if (size !== 'full' && media.variants[size]) {
+            return media.variants[size];
+        }
+        // Fallback to webp version
+        if (media.variants.webp) {
+            return media.variants.webp;
+        }
+    }
+
+    // Fallback to thumbnailUrl for small sizes
+    if ((size === 'thumbnail' || size === 'sm') && media.thumbnailUrl) {
+        return media.thumbnailUrl;
+    }
+
+    // Final fallback to original
+    return media.url;
+}
+
 // Fetch posts
 export async function getPosts(params: {
     locale?: string;

@@ -11,7 +11,7 @@
   --color-surface-light: #f1f5f9;
   --color-text: #0f172a;
   --color-text-secondary: #334155;
-  --color-text-muted: #64748b;
+  --color-text-muted: #475569;
   --color-border: #e2e8f0;
   
   /* Gradients */
@@ -39,7 +39,7 @@
     --color-surface-light: #243044;
     --color-text: #f1f5f9;
     --color-text-secondary: #cbd5e1;
-    --color-text-muted: #64748b;
+    --color-text-muted: #475569;
     --color-border: #334155;
   }
 }
@@ -51,7 +51,7 @@
   --color-surface-light: #243044;
   --color-text: #f1f5f9;
   --color-text-secondary: #cbd5e1;
-  --color-text-muted: #64748b;
+  --color-text-muted: #475569;
   --color-border: #334155;
 }
 

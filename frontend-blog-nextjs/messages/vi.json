@@ -56,7 +56,10 @@
         "copied": "Đã sao chép!",
         "updatedOn": "Cập nhật ngày",
         "minRead": "phút đọc",
-        "comments": "Bình luận"
+        "comments": "Bình luận",
+        "feedbackTitle": "Bạn có góp ý cho bài viết này?",
+        "feedbackDescription": "Mọi đóng góp ý kiến của bạn đều rất có giá trị và giúp chúng tôi cải thiện nội dung. Hãy gửi email cho chúng tôi!",
+        "feedbackButton": "Gửi góp ý"
     },
     "category": {
         "title": "Danh mục: {name}",

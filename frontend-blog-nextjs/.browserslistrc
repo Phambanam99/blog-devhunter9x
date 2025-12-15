@@ -1,0 +1,12 @@
+# Browsers that we support
+# Target modern browsers to avoid legacy polyfills
+
+defaults
+not IE 11
+not op_mini all
+
+# Modern browsers with ES6+ support
+last 2 Chrome versions
+last 2 Firefox versions
+last 2 Safari versions
+last 2 Edge versions
